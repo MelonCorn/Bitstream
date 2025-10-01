@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bitstream
 {
@@ -25,31 +22,39 @@ namespace Bitstream
 
 
         // 이동
-        public Vector2 Move()
+        public Vector2 MoveInput()
         {
-            ConsoleKeyInfo inputKey = Console.ReadKey();
+            ConsoleKeyInfo inputKey = Console.ReadKey(true);
+
+            Vector2 nextPos = currentPos;
 
             switch (inputKey.Key)
             {
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
-                    currentPos.y--;
+                    nextPos.y--;
                     break;
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
-                    currentPos.y++;
+                    nextPos.y++;
                     break;
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
-                    currentPos.x--;
+                    nextPos.x--;
                     break;
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
-                    currentPos.x++;
+                    nextPos.x++;
                     break;
             }
 
-            return currentPos;
+            return nextPos;
+        }
+
+        public void Move(Vector2 nextPos)
+        {
+            currentPos.x = nextPos.x;
+            currentPos.y = nextPos.y;
         }
     }
 }
