@@ -3,7 +3,11 @@ using System.Collections.Generic;
 
 namespace Bitstream
 {
-    internal class BitData
+    class BitData
     {
+        public int BitCount { get; set; }
+        public int MaxBitCount { get; set; }
+
+
     }
 }

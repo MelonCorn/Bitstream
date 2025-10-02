@@ -11,13 +11,26 @@ namespace Bitstream
 
     class Player
     {
+        // 공격용 비트
+        BitData bitStream;
+
+        int hp;         // 체력
+        int core;       // 코어
+
+        // 업그레이드용 재화
+        private static int memory = 1000;
+        public int Memory
+        {
+            get { return memory; }
+            set { memory = value; }
+        }
+
         // 현재 위치
-        Vector2 currentPos;
+        private Vector2 currentPos;
 
         public Vector2 CurrentPos
         {
             get { return currentPos; }
-            set { currentPos = value; }
         }
 
 

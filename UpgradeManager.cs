@@ -3,185 +3,123 @@ using System.Collections.Generic;
 
 namespace Bitstream
 {
-    class UpgradeManager
+    partial class UpgradeManager
     {
-        // 업그레이드 UI 시작점
-        private const int upgrade_UiStartX = 5;
-        private const int upgrade_UiStartY = 2;
+        // 재화를 사용할 플레이어
+        private Player player;
 
-        // 업그레이드 UI 크기
-        private const int upgrade_UiWidth = 45;
-        private const int upgrade_UiHeight = 30;
+        // 업그레이드 목록
+        private List<UpgradeItem> upgradeItems = new List<UpgradeItem>();
 
-        // 정보 UI 시작점
-        private const int info_UiStartX = 62;
-        private const int info_UiStartY = 6;
+        // 현재 선택된 업그레이드 (partail UI에서 조작)
+        private int selectedItemNum = 0;
 
-        // 정보 UI 크기
-        private const int info_UiWidth = 31;
-        private const int info_UiHeight = 24;
-
-
-        List<UpgradeItem> upgradeItems;
-
-        int selectedItemNum = 0;
-
-
-        public UpgradeManager()
+        public UpgradeManager(Player inputPlayer)
         {
-            // 아이템 미리 생성
-            upgradeItems = new List<UpgradeItem>();
+            player = inputPlayer;
 
-            upgradeItems.Add(new UpgradeItem("체력 증가", "최대 체력이 증가", 10));
-            upgradeItems.Add(new UpgradeItem("코어 확장", "전투마다 스킬을 사용 가능 횟수를 확장", 10));
-            upgradeItems.Add(new UpgradeItem("비트 확장", "공격에 사용할 수 있는 비트 수를 확장" , 10));
-            upgradeItems.Add(new UpgradeItem("Queue", "최근 적에게 준 데미지를 3번 저장. 가장 최근 준 데미지를 현재 턴에 합산", 10));
-            upgradeItems.Add(new UpgradeItem("Stack", "", 10));
+            // 업그레이드 생성
+            upgradeItems.Add(new HpUpgrade("Hp++", "최대 체력 확장", 10, 27));
+            upgradeItems.Add(new BitUpgrade("Bit++", "공격 비트 확장" , 10, 15));
+            upgradeItems.Add(new CoreUpgrade("Core++", "전투당 스킬 사용 횟수 확장", 10, 3));
+            upgradeItems.Add(new UpgradeItem("전위감소", "받는 데미지가 1 감소", 10, 3));
+            //upgradeItems.Add(new UpgradeItem("Queue", "최근 적에게 준 데미지를 3번 저장. 가장 최근 준 데미지를 현재 턴에 합산", 10));
+            //upgradeItems.Add(new UpgradeItem("Stack", "", 10));
         }
 
-        // 항목 UI 출력
-        void ShowUpgrageUI(int newSelectedNum)
-        {
-            // 영역 삭제, 박스 출력
-            GameManager.Instance.DrawBox(upgrade_UiStartX, upgrade_UiStartY, upgrade_UiWidth, upgrade_UiHeight);
-
-            // 업그레이드 UI
-            // 제목 출력
-            Console.SetCursorPosition(upgrade_UiStartX + 2, upgrade_UiStartY + 1);
-            Console.WriteLine("----------- [ 업그레이드 목록 ] -----------");
-            Console.SetCursorPosition(upgrade_UiStartX + 2, upgrade_UiStartY + 3);
-            Console.WriteLine("    [이름]         [비용]         [레벨]");
-
-            // 각 항목 출력
-            for (int i = 0; i < upgradeItems.Count; i++)
-            {
-                var item = upgradeItems[i];
-
-                // 언락이 필요한 항목인지 확인
-                bool unlockItem = GameManager.Instance.UnLock.ContainsKey(item.Name);
-
-                if (unlockItem == true)
-                {
-
-                }
-                else
-                {
-                    int yOffset = 5 + i * 2;
-                    
-                    // 글자 색
-                    ConsoleColor fontColor = ConsoleColor.White;
-                    // 여백
-                    string space = "";
-
-                    // 선택된 항목이라면
-                    if (i == newSelectedNum)
-                    {
-                        fontColor = ConsoleColor.Yellow;
-                        space = "   ";
-                    }
-
-                    Console.ForegroundColor = fontColor;
-
-                    Console.SetCursorPosition(upgrade_UiStartX + 2, upgrade_UiStartY + yOffset);
-                    Console.Write($"  {space}{item.Name}");
-                    Console.SetCursorPosition(upgrade_UiStartX + 22, upgrade_UiStartY + yOffset);
-                    Console.Write($"{item.Price}");
-                    Console.SetCursorPosition(upgrade_UiStartX + 36, upgrade_UiStartY + yOffset);
-                    Console.Write($"{item.CurrentLevel} / {item.MaxLevel}");
-                    Console.ResetColor();
-                }
-            }
-            Console.SetCursorPosition(upgrade_UiStartX + 2, upgrade_UiStartY + upgrade_UiHeight - 1);
-            Console.WriteLine("[Q]를 눌러 퇴장");
-        }
-
-        // 정보 UI 출력
-        void ShowInfoUI(int itemNum)
-        {
-            // 정보 UI
-            GameManager.Instance.DrawBox(info_UiStartX, info_UiStartY, info_UiWidth, info_UiHeight);
-
-            // 업그레이드 UI
-            // 제목 출력
-            Console.SetCursorPosition(info_UiStartX + 2, info_UiStartY + 1);
-            Console.WriteLine("---- [ 업그레이드 정보 ] ----");
-            var item = upgradeItems[itemNum];
-
-            // 언락이 필요한 항목인지 확인
-            bool unlockItem = GameManager.Instance.UnLock.ContainsKey(item.Name);
-
-            if (unlockItem == true)
-            {
-
-            }
-            else
-            {
-                // 항목 설명 분할해서 담을 큐
-                Queue<string> info = new Queue<string>();
-                // 항목 설명 분할 기준 : 설명 너비 / 2(한글) - 2(여백)
-                int cutLength = (info_UiWidth / 2) - 2;
-
-                // 설명이 분할길이 이상이면. 분할.
-                if (item.Info.Length >= cutLength)
-                {
-                    for (int i = 0; i < item.Info.Length / cutLength; i++)
-                    {
-                        info.Enqueue(item.Info.Substring(cutLength * i, cutLength));
-                    }
-                }
-                // 아니면 그냥 담기
-                else
-                {
-                    info.Enqueue(item.Info);
-                }
-
-                // 항목 이름
-                Console.SetCursorPosition(info_UiStartX + 2, info_UiStartY + 3);
-                Console.Write($"  {item.Name}");
-
-                // 항목 분할 설명 큐 출력
-                for (int i = 0; i < info.Count; i++)
-                {
-                    Console.SetCursorPosition(info_UiStartX + 2, info_UiStartY + 5 + i);
-                    Console.Write($"  {info.Dequeue().TrimStart()}");
-                }
-            }
-
-        }
-
-        // 항목 선택 
-        void ItemNavigation(int dir)
-        {
-            selectedItemNum += dir;
-
-            // 0 에서 한 번 더 위로
-            if (selectedItemNum < 0)
-            {
-                selectedItemNum = upgradeItems.Count - 1;
-            }
-            // 최대 에서 한 번 더 아래로
-            else if (selectedItemNum > upgradeItems.Count - 1)
-            {
-                selectedItemNum = 0;
-            }
-
-            ShowUpgrageUI(selectedItemNum);
-            ShowInfoUI(selectedItemNum);
-        }
-
-
-        // 구매
+        // 구매 시도
         void Purchase()
         {
+            UpgradeItem item = upgradeItems[selectedItemNum];
+
+            // 비용 확인
+            if (PriceCheck(item) == false) return;
+
+            // 레벨 확인 - 최대 레벨
+            if (LevelCheck(item) == true) return;
+
+            // 해금 상태 확인
+            if (UnlockCheck(item) == false)  return;
+
+            // 재화 감소
+            player.Memory -= item.Price;
+
+            // 업그레이드 적용
+            item.Upgrade();
+
+            // UI 갱신
+            ShowUpgrageUI(selectedItemNum);
+
+            UI.UpdateLog(new Log(LogType.Upgrade, $"{item.Name} 업그레이드. {item.CurrentLevel} / {item.MaxLevel}"));
+        }
+
+        // 비용 확인
+        bool PriceCheck(UpgradeItem item)
+        {
+            // 플레이어의 재화가 업그레이드 비용보다 적다면
+            if (item.Price > player.Memory)
+            {
+                UI.UpdateLog(new Log(LogType.Warning ,"Memory 부족"));
+                // 재화 부족하다고 알림
+                return false;
+            }
+
+            return true;
+        }
+
+        // 레벨 확인
+        bool LevelCheck(UpgradeItem item)
+        {
+            // 최대 레벨인가
+            if (item.CurrentLevel >= item.MaxLevel)
+            {
+                UI.UpdateLog(new Log(LogType.Warning, "최대 레벨"));
+                // 최대 레벨입니다.
+                return true;
+            }
+
+            return false;
 
         }
 
-        // 이용 중
-        public void ShopLoop()
+        // 해금 상태 확인
+        bool UnlockCheck(UpgradeItem item)
+        {
+            // 잠금 레벨 목록이 있는가
+            // 잠금 레벨 목록에 현재 레벨이 포함되어있나
+            if (item.LockLevels.Count > 0 && item.LockLevels.ContainsKey(item.CurrentLevel))
+            {
+                string key = item.LockLevels[item.CurrentLevel];
+
+                // 해금 목록에 항목의 해금 조건이 포함 되어있나
+                if (GameManager.Instance.UnLock.ContainsKey(key))
+                {
+                    // 해금이 되었나
+                    if (GameManager.Instance.UnLock[key] == false)
+                    {
+                        UI.UpdateLog(new Log(LogType.Danger, $"해금 필요 / {key} 처치"));
+                        return false;
+                    }
+                }
+                // 포함 안 되어있어도 안전상
+                else
+                {
+                    return false;
+                }
+            }
+
+            // 모든 조건 통과
+
+            return true;
+        }
+
+        // 업그레이드 이용 중
+        public void UpgradeLoop()
         {
             // UI 출력
             ShowUpgrageUI(0);
             ShowInfoUI(selectedItemNum);
+            UI.UpdateLog(new Log(LogType.Normal, "업그레이드 UI 로딩"));
 
             while (true)
             {
@@ -209,6 +147,8 @@ namespace Bitstream
                         // 퇴장
                         case ConsoleKey.Q:
                             GameManager.Instance.CurrentGameState = GameState.Field;
+                            UI.UpdateLog(new Log(LogType.Normal, "업그레이드 UI 종료"));
+                            Console.Clear();
                             return;
                     }
                 }

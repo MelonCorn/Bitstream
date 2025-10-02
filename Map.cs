@@ -5,15 +5,16 @@ namespace Bitstream
 {
     enum Tile
     {
-        None, BaseLayer, ByteLayer, ShortLayer, IntLayer, LongLayer,
-        Player = 10,
-        Upgrade = 20,
-        ByteMob = 30, ShortMob, IntMob, LongMob,
+        None, BaseLayer, ByteLayer, ShortLayer, IntLayer, LongLayer,    // 맵
+        Player = 10,                                    // 플레이어
+        Upgrade = 20,                                   // 업그레이드
+        ByteMob = 30, ShortMob, IntMob, LongMob,        // 일반몹
+        ByteBoss = 40, ShortBoss, IntBoss, LongBoss,    // 보스봅
     }
 
     class Map
     {
-        List<int[,]> maps = new List<int[,]>();
+        // 맵
         int[,] map = new int[,] {
             { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ,5 },
             { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 },
@@ -51,7 +52,6 @@ namespace Bitstream
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,20,20,20,20,20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         };
-
 
         // 맵 출력, (벽, 몬스터, 플레이어)
         public Vector2 PrintMap()
@@ -104,6 +104,7 @@ namespace Bitstream
             return startPos;
         }
 
+        // 플레이어 위치, 출력 갱신
         public Vector2 UpdatePlayerPos(Vector2 currentPos, Vector2 newPos)
         {
             // 다음 타일
