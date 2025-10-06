@@ -3,30 +3,10 @@ using System.Collections.Generic;
 
 namespace Bitstream
 {
-    struct Vector2
-    {
-        public int x;
-        public int y;
-    }
-
     class Player
     {
-        // 공격용 비트
-        BitData bitStream;
-
-        int hp;         // 체력
-        int core;       // 코어
-
-        // 업그레이드용 재화
-        private static int memory = 1000;
-        public int Memory
-        {
-            get { return memory; }
-            set { memory = value; }
-        }
-
-        // 현재 위치
-        private Vector2 currentPos;
+        public readonly PlayerData Data = new PlayerData();     // 데이터(스탯, 재화)
+        private Vector2 currentPos;             // 현재 위치
 
         public Vector2 CurrentPos
         {
@@ -34,7 +14,12 @@ namespace Bitstream
         }
 
 
-        // 이동
+        // 선택된 공격 행동
+        int selectAttackNum = 0;
+        // 선택된 방어 행동
+        int selectDefenseNum = 0;
+
+        // 이동 입력
         public Vector2 MoveInput()
         {
             ConsoleKeyInfo inputKey = Console.ReadKey(true);
@@ -64,10 +49,34 @@ namespace Bitstream
             return nextPos;
         }
 
+        // 이동
         public void Move(Vector2 nextPos)
         {
             currentPos.x = nextPos.x;
             currentPos.y = nextPos.y;
+        }
+
+
+
+        // 플레이어 공격 UI 출력
+        public void PrintAttackUI()
+        {
+            bool success = UIManager.TryPrintUI(UIType.PlayerAttack, out int x, out int y, out int width, out int height);
+
+            if (success == false) return;
+
+            // 출력
+            Console.SetCursorPosition(x + 2, y + 1);
+            Console.WriteLine("--- [ 공격 행동 ] ---");
+            Console.SetCursorPosition(x + 2, y + 3);
+            Console.WriteLine("1번 공격");
+        }
+
+
+        // 플레이어 공격
+        public void Attack()
+        {
+            Data.PrintBitSpin();
         }
     }
 }

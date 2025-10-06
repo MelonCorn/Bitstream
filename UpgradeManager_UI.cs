@@ -9,34 +9,18 @@ namespace Bitstream
 {
     partial class UpgradeManager
     {
-        // 업그레이드 UI 시작점
-        private const int upgrade_UiStartX = 5;
-        private const int upgrade_UiStartY = 2;
-
-        // 업그레이드 UI 크기
-        private const int upgrade_UiWidth = 45;
-        private const int upgrade_UiHeight = 30;
-
-        // 정보 UI 시작점
-        private const int info_UiStartX = 62;
-        private const int info_UiStartY = 2;
-
-        // 정보 UI 크기
-        private const int info_UiWidth = 31;
-        private const int info_UiHeight = 12;
-
-
         // 항목 UI 출력
-        void ShowUpgrageUI(int newSelectedNum)
+        void PrintUpgrageListUI(int newSelectedNum)
         {
-            // 영역 삭제, 박스 출력
-            UI.DrawBox(upgrade_UiStartX, upgrade_UiStartY, upgrade_UiWidth, upgrade_UiHeight);
+            bool success = UIManager.TryPrintUI(UIType.UpgradeList, out int x, out int y, out int width, out int height);
+
+            if (success == false) return;
 
             // 업그레이드 UI
             // 제목 출력
-            Console.SetCursorPosition(upgrade_UiStartX + 2, upgrade_UiStartY + 1);
-            Console.WriteLine("----------- [ 업그레이드 목록 ] -----------");
-            Console.SetCursorPosition(upgrade_UiStartX + 2, upgrade_UiStartY + 3);
+            Console.SetCursorPosition(x + 2, y + 1);
+            Console.WriteLine("----------- [ 업그레이드 목록 ] ----------");
+            Console.SetCursorPosition(x + 2, y + 3);
             Console.WriteLine("    [이름]         [비용]         [레벨]");
 
             // 각 항목 출력
@@ -58,68 +42,66 @@ namespace Bitstream
 
                 Console.ForegroundColor = fontColor;
 
-                Console.SetCursorPosition(upgrade_UiStartX + 2, upgrade_UiStartY + yOffset);
+                Console.SetCursorPosition(x + 2, y + yOffset);
                 Console.Write($"  {space}{item.Name}");
-                Console.SetCursorPosition(upgrade_UiStartX + 22, upgrade_UiStartY + yOffset);
+                Console.SetCursorPosition(x + 22, y + yOffset);
                 Console.Write($"{item.Price}");
-                Console.SetCursorPosition(upgrade_UiStartX + 36, upgrade_UiStartY + yOffset);
+                Console.SetCursorPosition(x + 36, y + yOffset);
                 Console.Write($"{item.CurrentLevel} / {item.MaxLevel}");
                 Console.ResetColor();
             }
-            Console.SetCursorPosition(upgrade_UiStartX + 2, upgrade_UiStartY + upgrade_UiHeight - 1);
-            Console.WriteLine($"[Q]를 눌러 종료\t\tMemory : {player.Memory}");
+
+            Console.SetCursorPosition(x + 4, y + height - 1);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"Memory : {player.Data.Memory}");
+            Console.ResetColor();
+
+            Console.SetCursorPosition(x + 26, y + height - 1);
+            Console.Write($"[Q]를 눌러 종료");
         }
 
         // 정보 UI 출력
-        void ShowInfoUI(int itemNum)
+        void PrintInfoUI(int itemNum)
         {
-            // 정보 UI
-            UI.DrawBox(info_UiStartX, info_UiStartY, info_UiWidth, info_UiHeight);
+            bool success = UIManager.TryPrintUI(UIType.UpgradeInfo, out int x, out int y, out int width, out int height);
+
+            if (success == false) return;
 
             // 업그레이드 UI
             // 제목 출력
-            Console.SetCursorPosition(info_UiStartX + 2, info_UiStartY + 1);
+            Console.SetCursorPosition(x + 2, y + 1);
             Console.WriteLine("---- [ 업그레이드 정보 ] ----");
             var item = upgradeItems[itemNum];
 
-            // 언락이 필요한 항목인지 확인
-            bool unlockItem = GameManager.Instance.UnLock.ContainsKey(item.Name);
+            // 항목 설명 분할해서 담을 큐
+            Queue<string> info = new Queue<string>();
 
-            if (unlockItem == true)
+            // 항목 설명 분할 기준 : 설명 너비 / 2(한글) - 1(여백)
+            int cutLength = (width / 2) - 1;
+
+            // 설명이 분할길이 이상이면. 분할.
+            if (item.Info.Length >= cutLength)
             {
-
+                for (int i = 0; i < item.Info.Length / cutLength; i++)
+                {
+                    info.Enqueue(item.Info.Substring(cutLength * i, cutLength));
+                }
             }
+            // 아니면 그냥 담기
             else
             {
-                // 항목 설명 분할해서 담을 큐
-                Queue<string> info = new Queue<string>();
-                // 항목 설명 분할 기준 : 설명 너비 / 2(한글) - 2(여백)
-                int cutLength = (info_UiWidth / 2) - 2;
+                info.Enqueue(item.Info);
+            }
 
-                // 설명이 분할길이 이상이면. 분할.
-                if (item.Info.Length >= cutLength)
-                {
-                    for (int i = 0; i < item.Info.Length / cutLength; i++)
-                    {
-                        info.Enqueue(item.Info.Substring(cutLength * i, cutLength));
-                    }
-                }
-                // 아니면 그냥 담기
-                else
-                {
-                    info.Enqueue(item.Info);
-                }
+            // 항목 이름
+            Console.SetCursorPosition(x + 2, y + 3);
+            Console.Write($"  {item.Name}");
 
-                // 항목 이름
-                Console.SetCursorPosition(info_UiStartX + 2, info_UiStartY + 3);
-                Console.Write($"  {item.Name}");
-
-                // 항목 분할 설명 큐 출력
-                for (int i = 0; i < info.Count; i++)
-                {
-                    Console.SetCursorPosition(info_UiStartX + 2, info_UiStartY + 5 + i);
-                    Console.Write($"  {info.Dequeue().TrimStart()}");
-                }
+            // 항목 분할 설명 큐 출력
+            for (int i = 0; i < info.Count; i++)
+            {
+                Console.SetCursorPosition(x + 2, y + 5 + i);
+                Console.Write($"  {info.Dequeue().TrimStart()}");
             }
 
         }
@@ -140,9 +122,8 @@ namespace Bitstream
                 selectedItemNum = 0;
             }
 
-            ShowUpgrageUI(selectedItemNum);
-            ShowInfoUI(selectedItemNum);
+            PrintUpgrageListUI(selectedItemNum);
+            PrintInfoUI(selectedItemNum);
         }
-
     }
 }

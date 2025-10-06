@@ -11,18 +11,17 @@ namespace Bitstream
         // 업그레이드 목록
         private List<UpgradeItem> upgradeItems = new List<UpgradeItem>();
 
-        // 현재 선택된 업그레이드 (partail UI에서 조작)
+        // 현재 선택된 업그레이드 (partial UI에서 조작)
         private int selectedItemNum = 0;
 
         public UpgradeManager(Player inputPlayer)
         {
             player = inputPlayer;
-
             // 업그레이드 생성
             upgradeItems.Add(new HpUpgrade("Hp++", "최대 체력 확장", 10, 27));
             upgradeItems.Add(new BitUpgrade("Bit++", "공격 비트 확장" , 10, 15));
-            upgradeItems.Add(new CoreUpgrade("Core++", "전투당 스킬 사용 횟수 확장", 10, 3));
-            upgradeItems.Add(new UpgradeItem("전위감소", "받는 데미지가 1 감소", 10, 3));
+            upgradeItems.Add(new CoreUpgrade("Core++", "전투당 스킬 사용 횟수 확장,가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하", 10, 3));
+            upgradeItems.Add(new UpgradeItem("전위감소", "받는 데미지가 1 감소", 10, 2));
             //upgradeItems.Add(new UpgradeItem("Queue", "최근 적에게 준 데미지를 3번 저장. 가장 최근 준 데미지를 현재 턴에 합산", 10));
             //upgradeItems.Add(new UpgradeItem("Stack", "", 10));
         }
@@ -42,24 +41,24 @@ namespace Bitstream
             if (UnlockCheck(item) == false)  return;
 
             // 재화 감소
-            player.Memory -= item.Price;
+            player.Data.Memory -= item.Price;
 
-            // 업그레이드 적용
-            item.Upgrade();
+            // 업그레이드
+            item.Upgrade(player.Data);
 
             // UI 갱신
-            ShowUpgrageUI(selectedItemNum);
+            PrintUpgrageListUI(selectedItemNum);
 
-            UI.UpdateLog(new Log(LogType.Upgrade, $"{item.Name} 업그레이드. {item.CurrentLevel} / {item.MaxLevel}"));
+            UIManager.UpdateLog(new Log(LogType.Upgrade, $"{item.Name} 업그레이드. {item.CurrentLevel} / {item.MaxLevel}"));
         }
 
         // 비용 확인
         bool PriceCheck(UpgradeItem item)
         {
             // 플레이어의 재화가 업그레이드 비용보다 적다면
-            if (item.Price > player.Memory)
+            if (item.Price > player.Data.Memory)
             {
-                UI.UpdateLog(new Log(LogType.Warning ,"Memory 부족"));
+                UIManager.UpdateLog(new Log(LogType.Warning ,"Memory 부족"));
                 // 재화 부족하다고 알림
                 return false;
             }
@@ -73,7 +72,7 @@ namespace Bitstream
             // 최대 레벨인가
             if (item.CurrentLevel >= item.MaxLevel)
             {
-                UI.UpdateLog(new Log(LogType.Warning, "최대 레벨"));
+                UIManager.UpdateLog(new Log(LogType.Warning, "최대 레벨"));
                 // 최대 레벨입니다.
                 return true;
             }
@@ -92,12 +91,12 @@ namespace Bitstream
                 string key = item.LockLevels[item.CurrentLevel];
 
                 // 해금 목록에 항목의 해금 조건이 포함 되어있나
-                if (GameManager.Instance.UnLock.ContainsKey(key))
+                if (GameManager.Instance.Unlock.ContainsKey(key))
                 {
                     // 해금이 되었나
-                    if (GameManager.Instance.UnLock[key] == false)
+                    if (GameManager.Instance.Unlock[key] == false)
                     {
-                        UI.UpdateLog(new Log(LogType.Danger, $"해금 필요 / {key} 처치"));
+                        UIManager.UpdateLog(new Log(LogType.Danger, $"해금 필요 / {key} 처치"));
                         return false;
                     }
                 }
@@ -117,9 +116,9 @@ namespace Bitstream
         public void UpgradeLoop()
         {
             // UI 출력
-            ShowUpgrageUI(0);
-            ShowInfoUI(selectedItemNum);
-            UI.UpdateLog(new Log(LogType.Normal, "업그레이드 UI 로딩"));
+            PrintUpgrageListUI(selectedItemNum);
+            PrintInfoUI(selectedItemNum);
+            UIManager.UpdateLog(new Log(LogType.Normal, "업그레이드 UI 로딩"));
 
             while (true)
             {
@@ -147,11 +146,13 @@ namespace Bitstream
                         // 퇴장
                         case ConsoleKey.Q:
                             GameManager.Instance.CurrentGameState = GameState.Field;
-                            UI.UpdateLog(new Log(LogType.Normal, "업그레이드 UI 종료"));
+                            UIManager.UpdateLog(new Log(LogType.Normal, "업그레이드 UI 종료"));
                             Console.Clear();
                             return;
                     }
                 }
+
+                System.Threading.Thread.Sleep(20);
             }
         }
     }

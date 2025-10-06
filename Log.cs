@@ -8,10 +8,9 @@ namespace Bitstream
 {
     enum LogType
     {
-        Normal, Warning, Danger,        // 위험도 흰 노 빨
-        Upgrade = 10,                   // 업그레이드 성공 하늘
-        PlayerDamage = 20, MonsterDamage, // 전투 데미지 초 주
-
+        Normal, Warning, Danger,        // 위험도 (White, Yellow, Red)
+        Upgrade = 10,                   // 업그레이드 성공 (Cyan)
+        PlayerDamage = 20, MonsterDamage, // 전투 데미지 (Green, Magenta)
     }
 
     class Log

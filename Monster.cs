@@ -5,22 +5,27 @@ namespace Bitstream
 {
     class Monster
     {
-        // 몬스터 이름
-        string Name { get; set; }
-
-        // 현재 체력
-        int CurrentHp { get; set; }
-
-        // 심볼 Char 
-        char Symbol {  get; set; }
+       
+        public readonly string Name;        // 몬스터 이름
+        public ulong CurrentHp { get; set; } // 현재 체력
+        public ulong MaxHp { get; set; }    // 최대 체력
+        public int Bits { get; set; }       // 비트
 
 
+        public Monster(string inputName, ulong inputHp, int bits)
+        {
+            Name = inputName;
+            MaxHp = inputHp;
+            Bits = bits;
+        }
 
         // 몬스터 도감에서 복사 생성
         public Monster(Monster template)
         {
             Name = template.Name;
-            CurrentHp = template.CurrentHp;
+            MaxHp = template.MaxHp;
+            CurrentHp = MaxHp;
+            Bits = template.Bits;
         }
 
     }

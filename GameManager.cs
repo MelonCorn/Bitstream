@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 
 namespace Bitstream
@@ -7,7 +6,6 @@ namespace Bitstream
     public enum GameState
     {
         Field, Upgrade, Battle,
-        PlayerTurn = 10, EnemyTurn,
     }
     public class GameManager
     {
@@ -25,16 +23,14 @@ namespace Bitstream
             }
         }
 
+        public Random rand = new Random();
+
         // 해금 목록
-        private Dictionary<string, bool> unlock = new Dictionary<string, bool>();
+        public readonly Dictionary<string, bool> Unlock = new Dictionary<string, bool>();
 
         // 게임 상태
         private GameState currentState = GameState.Field;
 
-        public Dictionary<string, bool> UnLock
-        {
-            get { return unlock; }
-        }
         public GameState CurrentGameState
         {
             get { return currentState; }
@@ -43,9 +39,9 @@ namespace Bitstream
 
         public GameManager()
         {
-            unlock.Add("Byte", false);
-            unlock.Add("Short", false);
-            unlock.Add("int", false);
+            Unlock.Add("ByteBoss", false);
+            Unlock.Add("ShortBoss", false);
+            Unlock.Add("IntBoss", false);
         }
 
     }
