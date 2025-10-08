@@ -10,6 +10,7 @@ namespace Bitstream
         PlayerAttack, PlayerDefense,
         BattleInfo,
         Log,
+        Clear,
     }
     class UIManager
     {
@@ -47,14 +48,17 @@ namespace Bitstream
             // 플레이어
             UI.Add(UIType.PlayerStat, new UIComponent(54, 19, 33, 12));
             UI.Add(UIType.PlayerBit, new UIComponent(2, 33, 85, 4));
-            UI.Add(UIType.PlayerAttack, new UIComponent(15, 24, 23, 6));
-            UI.Add(UIType.PlayerDefense, new UIComponent(15, 24, 23, 6));
+            UI.Add(UIType.PlayerAttack, new UIComponent(15, 20, 23, 9));
+            UI.Add(UIType.PlayerDefense, new UIComponent(15, 20, 23, 9));
 
             // 전투
             UI.Add(UIType.BattleInfo, new UIComponent(2, 1, 48, 30));
 
             // 로그
             UI.Add(UIType.Log, new UIComponent(54, 1, 33, 16));
+
+            // 클리어
+            UI.Add(UIType.Clear, new UIComponent(24, 17, 34, 5));
         }
 
 
@@ -78,6 +82,7 @@ namespace Bitstream
                 case UIType.PlayerDefense:
                 case UIType.BattleInfo:
                 case UIType.Log:
+                case UIType.Clear:
                     x = ui.StartX;
                     y = ui.StartY;
                     width = ui.Width;

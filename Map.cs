@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Security.Cryptography;
 
 namespace Bitstream
@@ -28,31 +29,31 @@ namespace Bitstream
     {
         // 맵
         int[,] mapTemplate = new int[,] {
-            { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,43,43,43,43,43, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 },
+            { 5, 5, 5, 5, 5,43,43,43,43, 5, 5, 5, 5, 5,5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 },
             { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 },
             { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 },
             { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 },
             { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 },
             { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 },
-            { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,42,42,42,42,42, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 },
+            { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,42,42,42, 5, 5, 5, 5, 5 },
             { 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4 },
             { 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4 },
             { 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4 },
             { 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4 },
             { 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4 },
-            { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,41,41,41,41,41, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
+            { 4, 4, 4, 4,41,41,41,41,41, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
             { 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
             { 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
             { 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
             { 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
             { 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
-            { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,40,40,40,40,40, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 },
+            { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,40,40,40,40, 3, 3, 3, 3, 3, 3 },
             { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
             { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
             { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
             { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
             { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
-            { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
+            { 2, 2, 2, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -63,7 +64,13 @@ namespace Bitstream
 
         int[,] currentMap;
 
-
+        Dictionary<Tile, char[]> bossSymbol = new Dictionary<Tile, char[]>()
+        {
+            { Tile.ByteBoss, new char[] { 'Β', 'Υ', 'Τ', 'Ε'} },
+            { Tile.ShortBoss,new char[] { 'Σ', 'Η', 'Ο', 'Ρ', 'Τ' } },
+            { Tile.IntBoss, new char[] { 'Ι', 'Ν', 'Τ' } },
+            { Tile.LongBoss, new char[] { 'λ', 'Ο', 'Ν', 'Θ'} },
+        };
 
         // 맵 복사
         public void GetMap()
@@ -72,7 +79,6 @@ namespace Bitstream
         }
 
         // 몬스터 타일 추가
-        // 위치 추가
         public void AddMonsterTile()
         {
             Random random = GameManager.Instance.rand;
@@ -92,10 +98,40 @@ namespace Bitstream
             }
         }
 
-        // 맵 출력, (벽, 몬스터, 플레이어)
+        // 해금 체크
+        bool CheckUnlock(Tile tile)
+        {
+            // 해금 확인
+            return GameManager.Instance.Unlock[tile.ToString()];
+        }
+
+        // 보스 타일 추가
+        Tile AddBossTile(Tile tile, ref int count)
+        {
+            // 해금 O
+            if (CheckUnlock(tile) == true)
+            {
+                Console.Write("　");
+                return Tile.None;
+            }
+
+            // 해금 X
+            Console.Write(bossSymbol[tile][count]);
+            count++;
+
+            return tile;
+        }
+
+        // 맵 출력 (벽, 몬스터, 플레이어)
         public Vector2 PrintMap()
         {
             Vector2 startPos = new Vector2();
+
+            int byteCount = 0;
+            int shortCount = 0;
+            int intCount = 0;
+            int longCount = 0;
+            Tile newTile = Tile.None;
 
             for (int y = 0; y < currentMap.GetLength(0); y++)
             {
@@ -103,7 +139,9 @@ namespace Bitstream
                 Console.SetCursorPosition(2, y + 1);
                 for (int x = 0; x < currentMap.GetLength(1); x++)
                 {
-                    switch ((Tile)currentMap[y, x])
+                    Tile tile = (Tile)currentMap[y, x];
+
+                    switch (tile)
                     {
                         case Tile.None:
                             Console.Write("　");
@@ -145,11 +183,20 @@ namespace Bitstream
                             Console.Write("ι");
                             break;
                         case Tile.ByteBoss:
+                            newTile = AddBossTile(tile, ref byteCount);
+                            currentMap[y, x] = (int)newTile;
+                            break;
                         case Tile.ShortBoss:
+                            newTile =  AddBossTile(tile, ref shortCount);
+                            currentMap[y, x] = (int)newTile;
+                            break;
                         case Tile.IntBoss:
+                            newTile =  AddBossTile(tile, ref intCount);
+                            currentMap[y, x] = (int)newTile;
+                            break;
                         case Tile.LongBoss:
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                            Console.Write("♣");
+                            newTile =  AddBossTile(tile, ref longCount);
+                            currentMap[y, x] = (int)newTile;
                             break;
                         case Tile.Upgrade:
                             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -191,6 +238,10 @@ namespace Bitstream
                 case Tile.ShortMob:
                 case Tile.IntMob:
                 case Tile.LongMob:
+                case Tile.ByteBoss:
+                case Tile.ShortBoss:
+                case Tile.IntBoss:
+                case Tile.LongBoss:
                     BattleManager.combatType = nextTile;
                     GameManager.Instance.CurrentGameState = GameState.Battle;
                     break;

@@ -13,11 +13,10 @@ namespace Bitstream
             get { return currentPos; }
         }
 
-
-        // 선택된 공격 행동
-        int selectAttackNum = 0;
-        // 선택된 방어 행동
-        int selectDefenseNum = 0;
+        public bool isDead
+        {
+            get { return isDead; }
+        }
 
         // 이동 입력
         public Vector2 MoveInput()
@@ -56,9 +55,13 @@ namespace Bitstream
             currentPos.y = nextPos.y;
         }
 
+        // 피격
+        public void TakeDamage(int dmg)
+        {
+            Data.UpdatePlayerStat(StatType.Hp, dmg);
+        }
 
-
-        // 플레이어 공격 UI 출력
+        // 플레이어 공격행동 UI 출력
         public void PrintAttackUI()
         {
             bool success = UIManager.TryPrintUI(UIType.PlayerAttack, out int x, out int y, out int width, out int height);
@@ -68,15 +71,41 @@ namespace Bitstream
             // 출력
             Console.SetCursorPosition(x + 2, y + 1);
             Console.WriteLine("--- [ 공격 행동 ] ---");
-            Console.SetCursorPosition(x + 2, y + 3);
-            Console.WriteLine("1번 공격");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.SetCursorPosition(x + 5, y + 3);
+            Console.WriteLine("  기본 공격");
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.SetCursorPosition(x + 5, y + 5);
+            Console.WriteLine("잠김");
+            Console.SetCursorPosition(x + 5, y + 7);
+            Console.WriteLine("잠김");
+
+            Console.ResetColor();
         }
-
-
-        // 플레이어 공격
-        public void Attack()
+        // 플레이어 방어행동 UI 출력
+        public void PrintDefenseUI()
         {
-            Data.PrintBitSpin();
+            bool success = UIManager.TryPrintUI(UIType.PlayerDefense, out int x, out int y, out int width, out int height);
+
+            if (success == false) return;
+
+            // 출력
+            Console.SetCursorPosition(x + 2, y + 1);
+            Console.WriteLine("--- [ 방어 행동 ] ---");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.SetCursorPosition(x + 5, y + 3);
+            Console.WriteLine("  방어");
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.SetCursorPosition(x + 5, y + 5);
+            Console.WriteLine("잠김");
+            Console.SetCursorPosition(x + 5, y + 7);
+            Console.WriteLine("잠김");
+
+            Console.ResetColor();
         }
     }
 }

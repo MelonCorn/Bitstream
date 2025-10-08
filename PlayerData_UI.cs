@@ -69,23 +69,18 @@ namespace Bitstream
 
             for (int i = 16; i > 0; i--)
             {
-                Console.Write(" ");
                 Console.ForegroundColor = i > maxBit ? ConsoleColor.DarkGray : ConsoleColor.Yellow;
-                for (int j = 0; j < 4; j++)
-                {
-                    Console.Write(0);
-                }
+                Console.Write(" 0000");
             }
             Console.ResetColor();
         }
 
-
-        // 비트 랜덤 출력
-        public void PrintBitSpin()
+        // 공격 비트 랜덤 출력
+        public ulong AttackBitSpin()
         {
             bool success = UIManager.TryPrintUI(UIType.PlayerBit, out int x, out int y, out int width, out int height);
 
-            if (success == false) return;
+            if (success == false) return 0;
 
             Random random = GameManager.Instance.rand;
 
@@ -97,13 +92,8 @@ namespace Bitstream
             Console.ForegroundColor = ConsoleColor.DarkGray;
             for (int i = 16; i > maxBit; i--)
             {
-                Console.Write(" ");
-                xOffset++;
-                for (int j = 0; j < 4; j++)
-                {
-                    Console.Write(0);
-                    xOffset++;
-                }
+                Console.Write(" 0000");
+                xOffset += 5;
             }
 
             int setCount = 0;   // 정해진 수
@@ -114,11 +104,12 @@ namespace Bitstream
             while(setCount < maxBit * 4)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
+
                 // 비활성화 비트 뒤
                 Console.SetCursorPosition(x + 4 + xOffset, y + 2);
 
                 // 비트업글 * 4 - 정해진 수 만큼
-                for(int i = 0; i < maxBit * 4 - setCount; i++)
+                for (int i = 0; i < maxBit * 4 - setCount; i++)
                 {
                     // 0, 1 중 랜덤 출력
                     int bitNum = random.Next(0, 2) == 0 ? 0 : 1;
@@ -135,27 +126,17 @@ namespace Bitstream
                     }
 
                     Console.Write((i + 1) % 4 == 0 ? $"{bitNum} " : $"{bitNum}");
-
-                    // 누적 데미지 출력
-                    //Console.SetCursorPosition(x + 4 , y + 10);
                 }
 
                 setCount++;
 
                 // 잠시 대기
                 System.Threading.Thread.Sleep(40);
-
             }
 
             Console.ResetColor();
 
-            UIManager.UpdateLog(new Log(LogType.PlayerDamage, playerDmg.ToString("N0") + " 타격"));
-
-            // 잠시 대기
-            System.Threading.Thread.Sleep(1000);
-
-            // 비트 UI 초기화
-            PrintBitUI();
+            return playerDmg;
         }
     }
 }

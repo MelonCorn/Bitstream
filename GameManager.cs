@@ -5,7 +5,7 @@ namespace Bitstream
 {
     public enum GameState
     {
-        Field, Upgrade, Battle,
+        Field, Upgrade, Battle, Clear,
     }
     public class GameManager
     {
@@ -42,6 +42,7 @@ namespace Bitstream
             Unlock.Add("ByteBoss", false);
             Unlock.Add("ShortBoss", false);
             Unlock.Add("IntBoss", false);
+            Unlock.Add("LongBoss", false);
         }
 
     }

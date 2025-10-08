@@ -18,12 +18,10 @@ namespace Bitstream
         {
             player = inputPlayer;
             // 업그레이드 생성
-            upgradeItems.Add(new HpUpgrade("Hp++", "최대 체력 확장", 10, 27));
+            upgradeItems.Add(new HpUpgrade("Hp++", "최대 체력 확장", 8, 25));
             upgradeItems.Add(new BitUpgrade("Bit++", "공격 비트 확장" , 10, 15));
-            upgradeItems.Add(new CoreUpgrade("Core++", "전투당 스킬 사용 횟수 확장,가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하", 10, 3));
-            upgradeItems.Add(new UpgradeItem("전위감소", "받는 데미지가 1 감소", 10, 2));
-            //upgradeItems.Add(new UpgradeItem("Queue", "최근 적에게 준 데미지를 3번 저장. 가장 최근 준 데미지를 현재 턴에 합산", 10));
-            //upgradeItems.Add(new UpgradeItem("Stack", "", 10));
+            upgradeItems.Add(new CoreUpgrade("Core++", "전투당 스킬 사용 횟수 확장", 300, 3));
+            upgradeItems.Add(new DefUpgrade("전위감소", "피격 데미지가 1 감소", 500, 3));
         }
 
         // 구매 시도
@@ -115,6 +113,8 @@ namespace Bitstream
         // 업그레이드 이용 중
         public void UpgradeLoop()
         {
+            selectedItemNum = 0;
+
             // UI 출력
             PrintUpgrageListUI(selectedItemNum);
             PrintInfoUI(selectedItemNum);

@@ -44,9 +44,18 @@ namespace Bitstream
 
                 Console.SetCursorPosition(x + 2, y + yOffset);
                 Console.Write($"  {space}{item.Name}");
+
                 Console.SetCursorPosition(x + 22, y + yOffset);
-                Console.Write($"{item.Price}");
-                Console.SetCursorPosition(x + 36, y + yOffset);
+                if(item.CurrentLevel == item.MaxLevel)
+                {
+                    Console.Write($"---");
+                }
+                else
+                {
+                    Console.Write($"{item.Price}");
+                }
+
+                    Console.SetCursorPosition(x + 36, y + yOffset);
                 Console.Write($"{item.CurrentLevel} / {item.MaxLevel}");
                 Console.ResetColor();
             }
